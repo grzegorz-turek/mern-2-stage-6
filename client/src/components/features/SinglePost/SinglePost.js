@@ -4,6 +4,9 @@ import Spinner from '../../common/Spinner/Spinner';
 import Alert from '../../common/Alert/Alert';
 import SmallTitle from '../../common/SmallTitle/SmallTitle';
 import HtmlBox from '../../common/HtmlBox/HtmlBox';
+import { withRouter } from 'react-router-dom';
+import { FacebookProvider, Comments, ShareButton } from 'react-facebook';
+import { BASE_URL } from '../../../config';
 import '../PostSummary/PostSummary.scss';
 
 class SinglePost extends React.Component {
@@ -19,14 +22,22 @@ class SinglePost extends React.Component {
     }
     
     render() {
-        const { singlePost, request } = this.props;
+        const { singlePost, request, location } = this.props;
         if(!request.pending && request.success && singlePost) {
             return (
                 <div>
                     <article className='post-summary'>
                         <SmallTitle>{singlePost.title}</SmallTitle>
+                        <FacebookProvider appId='477626572851912'>
+                            <ShareButton href={`${BASE_URL}/${location.pathname}`}>
+                                Share
+                            </ShareButton>
+                        </FacebookProvider>
                         <p>Author: {singlePost.author}</p>
                         <HtmlBox>{singlePost.content}</HtmlBox>
+                        <FacebookProvider appId='477626572851912'>
+                            <Comments href={`${BASE_URL}/${location.pathname}`} />
+                        </FacebookProvider>
                     </article>
                 </div>
             )
@@ -66,4 +77,5 @@ SinglePost.propTypes = {
     resetRequest: PropTypes.func.isRequired,
 };
 
-export default SinglePost;
+//export default SinglePost;
+export default withRouter(props => <SinglePost {...props}/>);
